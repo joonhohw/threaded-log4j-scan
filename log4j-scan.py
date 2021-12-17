@@ -26,7 +26,6 @@ from termcolor import cprint
 import ipaddress
 from queue import Queue
 from threading import Thread
-from time import time
 
 # Disable SSL warnings
 try:
