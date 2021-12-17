@@ -330,10 +330,19 @@ def main():
     if args.usedlist:
         with open(args.usedlist, "r") as f:
             for i in f.readlines():
-                i = i.strip()
+                i = i.strip().replace('http://', '').replace('https://', '')
                 if i == "" or i.startswith("#"):
                     continue
-                urls.append(i)
+                
+                # is line a CIDR range?
+                try:
+                    ips = [str(ip) for ip in ipaddress.IPv4Network(i)]
+                    for ip in ips:
+                        urls.append(f'http://{ip}')
+                        urls.append(f'https://{ip}')
+                except Exception:
+                    urls.append(f'http://{i}')
+                    urls.append(f'https://{i}')
 
     dns_callback_host = ""
     if args.custom_dns_callback_host:
