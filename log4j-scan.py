@@ -418,7 +418,7 @@ def main():
         with open('output.txt', 'a') as output_file:
             for i in records:
                 cprint(i, "yellow")
-                output_file.write(i + '\n')
+                output_file.write(str(i) + '\n')
 
 
 if __name__ == "__main__":
