@@ -324,7 +324,7 @@ class ScanWorker(Thread):
         while True:
             target = self.queue.get()
             try:
-                scan_url(target, c2)
+                scan_url(target, self.c2)
             finally:
                 self.queue.task_done()
 
