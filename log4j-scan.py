@@ -318,7 +318,7 @@ def main():
         
         # check if input is CIDR IP range
         try:
-            ips = [str(ip) for ip in ipaddress.IPv4Network(i)]
+            ips = [str(ip) for ip in ipaddress.IPv4Network(original_url)]
             for ip in ips:
                 urls.append(f'http://{ip}')
                 urls.append(f'https://{ip}')
