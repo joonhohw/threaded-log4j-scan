@@ -24,6 +24,9 @@ from Crypto.PublicKey import RSA
 from Crypto.Hash import SHA256
 from termcolor import cprint
 import ipaddress
+from queue import Queue
+from threading import Thread
+from time import time
 
 # Disable SSL warnings
 try:
@@ -309,6 +312,21 @@ def scan_url(url, callback_host):
             except Exception as e:
                 cprint(f"EXCEPTION: {e}")
 
+# Threading class
+class ScanWorker(Thread):
+
+    def __init__(self, queue, c2):
+        Thread.__init__(self)
+        self.queue = queue
+        self.c2 = c2
+        
+    def run(self):
+        while True:
+            target = self.queue.get()
+            try:
+                scan_url(target, c2)
+            finally:
+                self.queue.task_done()
 
 def main():
     urls = []
@@ -359,10 +377,25 @@ def main():
         dns_callback_host = dns_callback.domain
 
     cprint("[%] Checking for Log4j RCE CVE-2021-44228.", "magenta")
+    
+    """
     for url in urls:
         cprint(f"[•] URL: {url}", "magenta")
         scan_url(url, dns_callback_host)
-
+    """
+    
+    queue = Queue()
+    
+    for x in range(10):
+        worker = ScanWorker(queue, dns_callback_host)
+        worker.daemon = True
+        worker.start()
+        
+    for url in urls:
+        queue.put(url)
+    
+    queue.join()
+    
     if args.custom_dns_callback_host:
         cprint("[•] Payloads sent to all URLs. Custom DNS Callback host is provided, please check your logs to verify the existence of the vulnerability. Exiting.", "cyan")
         return
