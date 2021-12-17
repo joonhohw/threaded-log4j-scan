@@ -415,9 +415,10 @@ def main():
         cprint("[•] Targets does not seem to be vulnerable.", "green")
     else:
         cprint("[!!!] Target Affected", "yellow")
-        with open('output.txt', 'a')
-        for i in records:
-            cprint(i, "yellow")
+        with open('output.txt', 'a') as output_file:
+            for i in records:
+                cprint(i, "yellow")
+                output_file.write(i + '\n')
 
 
 if __name__ == "__main__":
