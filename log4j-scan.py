@@ -407,7 +407,7 @@ def main():
         return
 
     cprint("[•] Payloads sent to all URLs. Waiting for DNS OOB callbacks.", "cyan")
-    cprint("[•] Scanning took " + time.time() - start_time + ".", "cyan")
+    cprint("[•] Scanning took " + str(int(time.time() - start_time)) + " seconds.", "cyan")
     cprint("[•] Waiting...", "cyan")
     time.sleep(int(args.wait_time))
     records = dns_callback.pull_logs()
