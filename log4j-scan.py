@@ -23,7 +23,7 @@ from Crypto.Cipher import AES, PKCS1_OAEP
 from Crypto.PublicKey import RSA
 from Crypto.Hash import SHA256
 from termcolor import cprint
-
+import ipaddress
 
 # Disable SSL warnings
 try:
@@ -313,7 +313,20 @@ def scan_url(url, callback_host):
 def main():
     urls = []
     if args.url:
-        urls.append(args.url)
+        # strip protocol from input
+        original_url = args.url.strip().replace('http://', '').replace('https://', '')
+        
+        # check if input is CIDR IP range
+        try:
+            ips = [str(ip) for ip in ipaddress.IPv4Network(i)]
+            for ip in ips:
+                urls.append(f'http://{ip}')
+                urls.append(f'https://{ip}')
+        except Exception:
+            # test both http and https
+            urls.append(f'http://{original_url}')
+            urls.append(f'https://{original_url}')
+        
     if args.usedlist:
         with open(args.usedlist, "r") as f:
             for i in f.readlines():
