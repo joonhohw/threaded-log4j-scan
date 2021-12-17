@@ -115,6 +115,12 @@ parser.add_argument("--disable-http-redirects",
                     dest="disable_redirects",
                     help="Disable HTTP redirects. Note: HTTP redirects are useful as it allows the payloads to have higher chance of reaching vulnerable systems.",
                     action='store_true')
+parser.add_argument("--workers",
+                    dest="workers",
+                    help="Define number of workers for multithreading - [Default: 10].",
+                    default=10,
+                    type=int,
+                    action='store')
 
 args = parser.parse_args()
 
@@ -385,7 +391,7 @@ def main():
     
     queue = Queue()
     
-    for x in range(10):
+    for x in range(args.workers):
         worker = ScanWorker(queue, dns_callback_host)
         worker.daemon = True
         worker.start()
