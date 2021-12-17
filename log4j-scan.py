@@ -334,6 +334,7 @@ class ScanWorker(Thread):
                 self.queue.task_done()
 
 def main():
+    start_time = time.time()
     urls = []
     if args.url:
         # strip protocol from input
@@ -406,6 +407,7 @@ def main():
         return
 
     cprint("[•] Payloads sent to all URLs. Waiting for DNS OOB callbacks.", "cyan")
+    cprint("[•] Scanning took " + time.time() - start_time + ".", "cyan")
     cprint("[•] Waiting...", "cyan")
     time.sleep(int(args.wait_time))
     records = dns_callback.pull_logs()
@@ -413,6 +415,7 @@ def main():
         cprint("[•] Targets does not seem to be vulnerable.", "green")
     else:
         cprint("[!!!] Target Affected", "yellow")
+        with open('output.txt', 'a')
         for i in records:
             cprint(i, "yellow")
 
